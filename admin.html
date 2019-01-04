@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+  <input id=userid type="text" value="" >
+  <input id=msg type="text" >
+  <button id=emit onclick=sendMsg() >发送消息</button>
+  <textarea id="console" style="display:block;width:100vw;height:500px"></textarea>
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.dev.js"></script>
+<script>
+    var socketurl = "172.16.10.36:5000";
+    var socket = io(socketurl);
+    
+    socket.on("message",(message)=>{
+      log(JSON.stringify(message));
+    })
+
+    socket.on("log",(str)=>{
+      log(str);
+    })
+
+    function sendMsg(){
+      console.log(userid.value);
+      console.log(msg.value);
+      var message = {"userID":userid.value,
+     "message":JSON.stringify(msg.value)
+      }
+      socket.emit('message',message);
+    }
+  
+    function log(str){
+      if(typeof str === 'object'){
+        str = JSON.stringify(str);
+      }
+      var cs = document.getElementById('console');
+      cs.value += "\r\n";
+      cs.value += str;
+    }
+</script>
+</html>
